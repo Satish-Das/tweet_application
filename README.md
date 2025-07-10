@@ -1,10 +1,10 @@
 # Tweet Application
 
-A Django-based Twitter-like application built on **July 10, 2025**.
+A Django-based Twitter-like application built on **July 10-11, 2025**.
 
 ## Project Overview
 
-This is a Django web application designed to replicate basic Twitter functionality. The project is currently in its initial setup phase with basic Django structure in place.
+This is a Django web application designed to replicate basic Twitter functionality. The project features a complete tweet system with user authentication, tweet creation, editing, and deletion capabilities, styled with Bootstrap 5.3.7.
 
 ## Project Structure
 
@@ -17,24 +17,29 @@ tweet_application/
 └── tweet_app/
     ├── db.sqlite3                  # SQLite database
     ├── manage.py                   # Django management script
+    ├── static/                     # Static files directory
+    ├── media/                      # Media files directory
+    │   └── photos/                 # Tweet photos storage
+    ├── templates/                  # Global templates
+    │   └── layout.html             # Base template with Bootstrap
     ├── tweet/                      # Main app directory
     │   ├── __init__.py
     │   ├── admin.py                # Admin interface configuration
     │   ├── apps.py                 # App configuration
-    │   ├── models.py               # Database models
-    │   ├── tests.py                # Test cases
+    │   ├── models.py               # Tweet model
+    │   ├── forms.py                # Tweet form
+    │   ├── views.py                # Tweet CRUD views
     │   ├── urls.py                 # URL routing for tweet app
-    │   ├── views.py                # View functions (index view added)
-    │   ├── templates/              # HTML templates directory
-    │   │   └── index.html          # Main template with custom styling
-    │   ├── migrations/             # Database migrations
-    │   │   └── __init__.py
-    │   └── __pycache__/            # Python cache files
+    │   ├── tests.py                # Test cases
+    │   ├── templates/              # App-specific templates
+    │   │   └── index.html          # Home page template
+    │   └── migrations/             # Database migrations
+    │       └── __init__.py
     └── tweet_app/                  # Project settings directory
         ├── __init__.py
         ├── asgi.py                 # ASGI configuration
-        ├── settings.py             # Django settings (tweet app added)
-        ├── urls.py                 # Main URL configuration (tweet URLs included)
+        ├── settings.py             # Django settings
+        ├── urls.py                 # Main URL configuration
         ├── wsgi.py                 # WSGI configuration
         └── __pycache__/            # Python cache files
 ```
@@ -49,32 +54,37 @@ tweet_application/
 - [x] Media files configuration
 - [x] SQLite database setup
 - [x] Admin interface setup
-- [x] Tweet app integration in settings
-- [x] Basic URL routing configuration
-- [x] First view function (index view)
-- [x] Template directory structure
-- [x] Basic HTML template with custom styling
+- [x] **Tweet Model**: Complete with user association, text, photo, timestamps
+- [x] **Tweet Forms**: ModelForm for creating and editing tweets
+- [x] **Tweet Views**: Index view and CRUD function definitions (not all connected to URLs)
+- [x] **URL Routing**: Basic routing for tweet app (only index page active)
+- [x] **Admin Integration**: Tweet model registered in admin panel
+- [x] **Bootstrap 5.3.7 Integration**: Modern responsive UI framework
+- [x] **Template Structure**: Base layout with Bootstrap components
+- [x] **Media Handling**: Photo upload functionality for tweets
 
 ### 🔄 In Progress
-- [ ] Tweet models implementation
-- [ ] User authentication system
-- [ ] Advanced template design
-- [ ] Tailwind CSS integration (planned)
+- [ ] Complete URL routing for all views
+- [ ] Template implementation for all views
+- [ ] User authentication integration
 
 ### 📋 Pending Features
 - [ ] User registration and login
-- [ ] Tweet creation and display
+- [ ] Tweet list display (view exists but not routed)
+- [ ] Tweet create/edit/delete functionality (views exist but not routed)
+- [ ] Tweet detail view
 - [ ] User profiles
 - [ ] Follow/Unfollow functionality
 - [ ] Tweet likes and retweets
 - [ ] Real-time updates
-- [ ] Frontend styling with Tailwind CSS
-- [ ] Static files for CSS and JavaScript
+- [ ] Search functionality
 
 ## Technologies Used
 
 - **Backend**: Django 5.2.4
 - **Database**: SQLite3
+- **Frontend**: Bootstrap 5.3.7 (CDN)
+- **Image Processing**: Pillow 11.3.0
 - **Python**: Python 3.13
 - **Environment**: Virtual environment (.venv)
 
@@ -84,6 +94,7 @@ Current dependencies as listed in `requirements.txt`:
 ```
 asgiref==3.9.1
 Django==5.2.4
+pillow==11.3.0
 sqlparse==0.5.3
 ```
 
@@ -91,70 +102,31 @@ sqlparse==0.5.3
 
 ### Django Settings
 - **Debug Mode**: Enabled for development
+- **Installed Apps**: Tweet app added to INSTALLED_APPS
+- **Templates**: Global templates directory configured
 - **Static Files**: Configured with `STATICFILES_DIRS`
 - **Media Files**: Configured with `MEDIA_URL` and `MEDIA_ROOT`
 - **Database**: SQLite3 (default Django database)
-- **Secret Key**: Django-generated secret key for development
+
+### Tweet Model Features
+- **User Association**: Foreign key to Django User model
+- **Text Content**: TextField with 240 character limit
+- **Photo Upload**: ImageField for tweet images
+- **Timestamps**: Auto-generated created_at and updated_at fields
+- **String Representation**: User-friendly display format
 
 ### URL Configuration
-- Admin interface accessible at `/admin/`
-- Tweet app accessible at `/tweet/`
-- Main index page at `/tweet/` shows "test template"
+- Admin interface: `/admin/`
+- Tweet app: `/tweet/`
 - Static and media files properly routed
-- URL patterns organized with Django's include() function
+- Tweet home page: `/tweet/` (index view only)
 
-## Recent Updates (July 10, 2025)
-
-### New Features Added:
-1. **Tweet App Integration**: Added 'tweet' to INSTALLED_APPS in settings.py
-2. **URL Routing**: 
-   - Created tweet app URLs (`tweet/urls.py`)
-   - Integrated tweet URLs into main project URLs
-   - Added index view routing
-3. **Template System**:
-   - Created templates directory structure
-   - Added `index.html` template with custom styling
-   - Implemented dark theme with black background and white text
-4. **View Functions**:
-   - Created index view function in `views.py`
-   - Connected view to template rendering
-
-### Code Implementation Details:
-
-**views.py**:
-```python
-from django.shortcuts import render
-
-def index(request):
-    return render(request, 'index.html')
-```
-
-**tweet/urls.py**:
-```python
-from django.urls import path
-from . import views
-
-urlpatterns = [
-    path('', views.index, name='index'),
-]
-```
-
-**Main URLs Configuration**:
-```python
-from django.urls import path, include
-
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('tweet/', include('tweet.urls'))
-]
-```
-
-**Template (index.html)**:
-- Basic HTML5 structure
-- Custom CSS styling with dark theme
-- Black background (#000) with white text
-- Responsive viewport meta tag
-- Test content: "test template"
+### Bootstrap Integration
+- **Version**: Bootstrap 5.3.7
+- **Theme**: Dark mode enabled (`data-bs-theme="dark"`)
+- **CDN**: Using official Bootstrap CDN
+- **Components**: Navigation bar, responsive container, utility classes
+- **JavaScript**: Bootstrap Bundle with Popper.js included
 
 ## Setup Instructions
 
@@ -199,80 +171,61 @@ urlpatterns = [
    ```
 
 8. **Access the application**:
-   - Main application: http://127.0.0.1:8000/
-   - Tweet app: http://127.0.0.1:8000/tweet/
+   - Tweet home page: http://127.0.0.1:8000/tweet/
    - Admin interface: http://127.0.0.1:8000/admin/
 
-## Tailwind CSS Integration (Planned)
+## Bootstrap Configuration
 
-The project is prepared for Tailwind CSS integration. The following commands will be used to configure Tailwind CSS:
+The project uses Bootstrap 5.3.7 for styling and responsive design:
 
-### Installation Commands
-```bash
-# Install Node.js dependencies
-npm init -y
-npm install -D tailwindcss@latest postcss@latest autoprefixer@latest
+### Bootstrap Features Implemented
+- **Responsive Navigation**: Collapsible navbar with dropdown menus
+- **Dark Theme**: Enabled by default with `data-bs-theme="dark"`
+- **Grid System**: Container-based layout
+- **Utility Classes**: Spacing, typography, and color utilities
+- **Components**: Navigation, forms, buttons, and cards
 
-# Initialize Tailwind CSS
-npx tailwindcss init -p
+### Bootstrap CDN Links Used
+```html
+<!-- CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
 
-# Install Django Tailwind (alternative approach)
-pip install django-tailwind
+<!-- JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 ```
 
-### Configuration Steps
-1. **Add to Django settings**:
-   ```python
-   INSTALLED_APPS = [
-       # ... existing apps
-       'tailwind',
-       'theme',  # Custom theme app
-   ]
-   
-   TAILWIND_APP_NAME = 'theme'
-   ```
-
-2. **Create Tailwind configuration**:
-   ```bash
-   python manage.py tailwind init
-   ```
-
-3. **Install Tailwind CSS**:
-   ```bash
-   python manage.py tailwind install
-   ```
-
-4. **Build Tailwind CSS**:
-   ```bash
-   python manage.py tailwind build
-   ```
-
-5. **Start Tailwind CSS development server**:
-   ```bash
-   python manage.py tailwind start
-   ```
+### Template Structure
+- **Base Template**: `templates/layout.html` with Bootstrap framework
+- **Template Inheritance**: App templates extend the base layout
+- **Bootstrap Classes**: Used for styling and responsiveness
 
 ## Development Notes
 
 - **Date Created**: July 10, 2025
+- **Last Updated**: July 11, 2025
 - **Framework**: Django 5.2.4
+- **UI Framework**: Bootstrap 5.3.7
 - **Database**: SQLite3 (development)
-- **Static Files**: Configured for local development
-- **Media Files**: Configured for user uploads
-- **Current Status**: Basic template system implemented with custom styling
-- **Template Engine**: Django's built-in template system
-- **Styling**: Custom CSS (inline) - ready for Tailwind CSS integration
+- **Image Handling**: Pillow for photo processing
 
-## Next Steps
+## Tweet Model Implementation
 
-1. **Integrate Tailwind CSS**: Replace inline CSS with Tailwind utility classes
-2. **Implement Tweet Model**: Create database models for tweets, users, and relationships
-3. **Add Authentication**: Implement user registration and login system
-4. **Enhance Templates**: Create more templates and improve UI/UX
-5. **Add JavaScript**: Implement interactive features
-6. **Create Static Files Structure**: Organize CSS and JavaScript files
-7. **Testing**: Write comprehensive tests for all functionality
-8. **Database Migrations**: Create and apply necessary migrations
+```python
+class Tweet(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField(max_length=240)
+    photo = models.ImageField(upload_to='photos/', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+```
+
+## Views Implemented
+
+- **index**: Home page view (connected to URL)
+- **tweet_list**: Display all tweets function (defined but not routed)
+- **tweet_create**: Create new tweets function (defined but not routed)
+- **tweet_edit**: Edit existing tweets function (defined but not routed)
+- **tweet_delete**: Delete tweets function (defined but not routed)
 
 ## Contributing
 
