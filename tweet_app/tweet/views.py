@@ -156,7 +156,12 @@ def like_tweet(request, tweet_id):
     return redirect('tweet_list')
 
 def tweet_detail(request, tweet_id):
-    tweet = get_object_or_404(Tweet, pk=tweet_id)
+    try:
+        tweet = get_object_or_404(Tweet, pk=tweet_id)
+    except:
+        messages.error(request, "Tweet not found.")
+        return redirect('tweet_list')
+    
     comments = tweet.comments.all()
     
     if request.method == 'POST' and request.user.is_authenticated:

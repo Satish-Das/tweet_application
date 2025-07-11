@@ -71,10 +71,6 @@ Tweet Detail
                                     <i class="far fa-comment me-1"></i>
                                     <span>{{ tweet.comments_count }}</span>
                                 </span>
-                                <button class="btn btn-sm btn-outline-secondary rounded-pill border-0 bg-transparent" style="color: var(--text-muted);">
-                                    <i class="fas fa-retweet me-1"></i>
-                                    <span>Retweet</span>
-                                </button>
                                 {% if user.is_authenticated %}
                                     <button class="btn btn-sm btn-outline-secondary rounded-pill border-0 bg-transparent like-btn" 
                                             data-tweet-id="{{ tweet.id }}" 
