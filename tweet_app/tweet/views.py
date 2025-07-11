@@ -5,8 +5,8 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.db import models
 from django.contrib import messages
-from .models import Tweet, UserProfile, Like, Comment, Report, Block
-from .forms import TweetForm, UserRegistrationForm, UserProfileForm, UserUpdateForm, CommentForm, ReportForm
+from .models import Tweet, UserProfile, Like, Comment
+from .forms import TweetForm, UserRegistrationForm, UserProfileForm, UserUpdateForm, CommentForm
 
 # Create your views here.
 def index(request):
@@ -187,60 +187,3 @@ def search(request):
         'tweets_count': tweets.count() if tweets else 0,
     }
     return render(request, 'search.html', context)
-
-@login_required
-def report_tweet(request, tweet_id):
-    tweet = get_object_or_404(Tweet, pk=tweet_id)
-    
-    # Check if user has already reported this tweet
-    if Report.objects.filter(reporter=request.user, tweet=tweet).exists():
-        messages.warning(request, 'You have already reported this tweet.')
-        return redirect('tweet_detail', tweet_id=tweet.id)
-    
-    if request.method == 'POST':
-        form = ReportForm(request.POST)
-        if form.is_valid():
-            report = form.save(commit=False)
-            report.reporter = request.user
-            report.tweet = tweet
-            report.save()
-            messages.success(request, 'Thank you for your report. We will review it shortly.')
-            return redirect('tweet_detail', tweet_id=tweet.id)
-    else:
-        form = ReportForm()
-    
-    context = {
-        'tweet': tweet,
-        'form': form,
-    }
-    return render(request, 'report_tweet.html', context)
-
-@login_required
-def block_user(request, username):
-    user_to_block = get_object_or_404(User, username=username)
-    
-    if user_to_block == request.user:
-        messages.error(request, 'You cannot block yourself.')
-        return redirect('profile_view', username=username)
-    
-    block, created = Block.objects.get_or_create(blocker=request.user, blocked=user_to_block)
-    
-    if created:
-        messages.success(request, f'You have blocked @{user_to_block.username}.')
-    else:
-        # If block already exists, unblock
-        block.delete()
-        messages.success(request, f'You have unblocked @{user_to_block.username}.')
-    
-    return redirect('profile_view', username=username)
-
-@login_required
-def blocked_users(request):
-    blocked_users = User.objects.filter(
-        blocked_by__blocker=request.user
-    ).order_by('-blocked_by__created_at')
-    
-    context = {
-        'blocked_users': blocked_users,
-    }
-    return render(request, 'blocked_users.html', context)

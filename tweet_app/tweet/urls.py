@@ -9,7 +9,6 @@ urlpatterns = [
     path('<int:tweet_id>/edit/', views.tweet_edit, name='tweet_edit'),
     path('<int:tweet_id>/delete/', views.tweet_delete, name='tweet_delete'),
     path('<int:tweet_id>/like/', views.like_tweet, name='like_tweet'),
-    path('<int:tweet_id>/report/', views.report_tweet, name='report_tweet'),
     path('register/', views.register, name='register'),
     path('profile/', views.profile_view, name='profile_view'),
     path('profile/edit/', views.profile_edit, name='profile_edit'),
