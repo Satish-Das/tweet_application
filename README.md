@@ -7,14 +7,10 @@ A Django-based Twitter-like application built on **July 10-11, ### 🔄 I- [x] *
 
 ### 🔄 In Progress
 - [ ] Tweet likes and reactions system
-- [ ] Real-time notifications
 
 ### 📋 Pending Features
 - [ ] Tweet detail view with comments
 - [ ] Advanced search functionality
-- [ ] Email notifications
-- [ ] Direct messaging system
-- [ ] Tweet analytics
 - [ ] Content moderation tools*: Mobile-friendly interface with Bootstrap grid
 - [x] **Database Migrations**: All models properly migrated to database
 - [x] **URL Configuration**: Fixed routing issues and proper URL pattern ordering
@@ -28,7 +24,6 @@ A Django-based Twitter-like application built on **July 10-11, ### 🔄 I- [x] *
 
 ### 🔄 In Progress
 - [ ] Tweet likes and reactions system
-- [ ] Real-time notifications
 
 ### 📋 Pending Features
 - [ ] Tweet detail view with comments
