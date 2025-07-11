@@ -7,6 +7,31 @@ class TweetForm(forms.ModelForm):
     class Meta:
         model = Tweet
         fields = ['text', 'photo']
+        widgets = {
+            'text': forms.Textarea(attrs={
+                'class': 'form-control form-control-lg', 
+                'rows': 4, 
+                'placeholder': "What's happening? Share your thoughts...",
+                'maxlength': 240,
+                'style': 'border-radius: 12px; border: 2px solid var(--border-color); font-size: 1.1rem; padding: 1rem;',
+                'oninput': 'updateCharCount(this)',
+                'required': True
+            }),
+            'photo': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*',
+                'style': 'border-radius: 12px; border: 2px solid var(--border-color); padding: 0.8rem;',
+                'onchange': 'previewImage(this)'
+            })
+        }
+        
+    def clean_text(self):
+        text = self.cleaned_data.get('text')
+        if not text or len(text.strip()) == 0:
+            raise forms.ValidationError("Tweet text cannot be empty.")
+        if len(text) > 240:
+            raise forms.ValidationError("Tweet text cannot exceed 240 characters.")
+        return text
 
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField()

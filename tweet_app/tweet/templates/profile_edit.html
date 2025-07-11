@@ -5,67 +5,144 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h4>Edit Profile</h4>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-header border-0 py-4" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%); color: white; border-radius: 12px 12px 0 0;">
+                <div class="d-flex align-items-center">
+                    <div class="me-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                             style="width: 50px; height: 50px; background: rgba(255,255,255,0.2);">
+                            <i class="fas fa-user-edit fa-lg"></i>
+                        </div>
+                    </div>
+                    <h4 class="mb-0 fw-bold">Edit Profile</h4>
                 </div>
-                <div class="card-body">
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h6>Personal Information</h6>
-                                <div class="mb-3">
-                                    <label for="{{ user_form.first_name.id_for_label }}" class="form-label">First Name</label>
-                                    {{ user_form.first_name }}
-                                </div>
-                                <div class="mb-3">
-                                    <label for="{{ user_form.last_name.id_for_label }}" class="form-label">Last Name</label>
-                                    {{ user_form.last_name }}
-                                </div>
-                                <div class="mb-3">
-                                    <label for="{{ user_form.email.id_for_label }}" class="form-label">Email</label>
-                                    {{ user_form.email }}
-                                </div>
+            </div>
+            <div class="card-body p-4">
+                {% if user_form.errors or profile_form.errors %}
+                    <div class="alert alert-danger border-0 rounded-3 mb-4">
+                        <h6 class="alert-heading mb-2 fw-bold">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Please fix the following errors:
+                        </h6>
+                        {% for field, errors in user_form.errors.items %}
+                            <div class="mb-2">
+                                <strong>{{ field|capfirst }}:</strong>
+                                {% for error in errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
                             </div>
-                            
-                            <div class="col-md-6">
-                                <h6>Profile Details</h6>
+                        {% endfor %}
+                        {% for field, errors in profile_form.errors.items %}
+                            <div class="mb-2">
+                                <strong>{{ field|capfirst }}:</strong>
+                                {% for error in errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <h6 class="fw-semibold mb-3 pb-2 border-bottom" style="color: var(--text-primary);">
+                                    <i class="fas fa-user me-2"></i>Personal Information
+                                </h6>
                                 <div class="mb-3">
-                                    <label for="{{ profile_form.bio.id_for_label }}" class="form-label">Bio</label>
-                                    {{ profile_form.bio }}
+                                    <label for="{{ user_form.first_name.id_for_label }}" class="form-label fw-semibold" style="color: var(--text-primary);">First Name</label>
+                                    <input type="text" class="form-control rounded-3" name="{{ user_form.first_name.name }}" 
+                                           value="{{ user_form.first_name.value|default:'' }}" placeholder="Enter your first name">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="{{ profile_form.location.id_for_label }}" class="form-label">Location</label>
-                                    {{ profile_form.location }}
+                                    <label for="{{ user_form.last_name.id_for_label }}" class="form-label fw-semibold" style="color: var(--text-primary);">Last Name</label>
+                                    <input type="text" class="form-control rounded-3" name="{{ user_form.last_name.name }}" 
+                                           value="{{ user_form.last_name.value|default:'' }}" placeholder="Enter your last name">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="{{ profile_form.birth_date.id_for_label }}" class="form-label">Birth Date</label>
-                                    {{ profile_form.birth_date }}
-                                </div>
-                                <div class="mb-3">
-                                    <label for="{{ profile_form.website.id_for_label }}" class="form-label">Website</label>
-                                    {{ profile_form.website }}
-                                </div>
-                                <div class="mb-3">
-                                    <label for="{{ profile_form.avatar.id_for_label }}" class="form-label">Profile Picture</label>
-                                    {{ profile_form.avatar }}
+                                    <label for="{{ user_form.email.id_for_label }}" class="form-label fw-semibold" style="color: var(--text-primary);">Email</label>
+                                    <input type="email" class="form-control rounded-3" name="{{ user_form.email.name }}" 
+                                           value="{{ user_form.email.value|default:'' }}" placeholder="Enter your email">
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="d-flex justify-content-between">
-                            <a href="{% url 'profile_view' user.username %}" class="btn btn-secondary">Cancel</a>
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <h6 class="fw-semibold mb-3 pb-2 border-bottom" style="color: var(--text-primary);">
+                                    <i class="fas fa-info-circle me-2"></i>Profile Details
+                                </h6>
+                                <div class="mb-3">
+                                    <label for="{{ profile_form.bio.id_for_label }}" class="form-label fw-semibold" style="color: var(--text-primary);">Bio</label>
+                                    <textarea class="form-control rounded-3" name="{{ profile_form.bio.name }}" rows="3" 
+                                              placeholder="Tell us about yourself...">{{ profile_form.bio.value|default:'' }}</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="{{ profile_form.location.id_for_label }}" class="form-label fw-semibold" style="color: var(--text-primary);">Location</label>
+                                    <input type="text" class="form-control rounded-3" name="{{ profile_form.location.name }}" 
+                                           value="{{ profile_form.location.value|default:'' }}" placeholder="Where are you located?">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="{{ profile_form.birth_date.id_for_label }}" class="form-label fw-semibold" style="color: var(--text-primary);">Birth Date</label>
+                                    <input type="date" class="form-control rounded-3" name="{{ profile_form.birth_date.name }}" 
+                                           value="{{ profile_form.birth_date.value|default:'' }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="{{ profile_form.website.id_for_label }}" class="form-label fw-semibold" style="color: var(--text-primary);">Website</label>
+                                    <input type="url" class="form-control rounded-3" name="{{ profile_form.website.name }}" 
+                                           value="{{ profile_form.website.value|default:'' }}" placeholder="https://your-website.com">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="{{ profile_form.avatar.id_for_label }}" class="form-label fw-semibold" style="color: var(--text-primary);">Profile Picture</label>
+                                    <input type="file" class="form-control rounded-3" name="{{ profile_form.avatar.name }}" accept="image/*">
+                                    <small class="text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Supported formats: JPG, PNG, GIF (Max 5MB)
+                                    </small>
+                                </div>
+                            </div>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between pt-3 border-top">
+                        <a href="{% url 'profile_view' user.username %}" class="btn btn-outline-secondary btn-lg rounded-pill px-4">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill px-4 fw-semibold">
+                            <i class="fas fa-save me-2"></i>Save Changes
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.card {
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.2rem rgba(43, 108, 176, 0.25);
+    outline: none;
+}
+
+.btn {
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.border-bottom {
+    border-color: var(--border-color) !important;
+}
+</style>
 {% endblock %}

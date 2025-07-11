@@ -1,9 +1,115 @@
 {% extends "layout.html" %}
 
 {% block title %}
-Tweet page
+TweetApp - Share Your Thoughts
 {% endblock  %}
 
 {% block content %}
-    <h1 class="text-center mt-4">Welcome to Tweet page</h1>
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="text-center mb-4">
+            <h1 class="display-5 fw-bold mb-3" style="color: var(--text-primary);">Welcome to TweetApp</h1>
+            <p class="lead text-muted">Join the conversation and share what's on your mind</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="text-center p-4 rounded-3 h-100" style="background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%); border: 1px solid var(--border-color);">
+                    <div class="mb-3">
+                        <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center" 
+                             style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%); color: white;">
+                            <i class="fas fa-comments fa-2x"></i>
+                        </div>
+                    </div>
+                    <h5 class="fw-semibold mb-2" style="color: var(--text-primary);">Share</h5>
+                    <p class="text-muted mb-0">Express your thoughts in 240 characters</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-4 rounded-3 h-100" style="background: linear-gradient(135deg, #f0fff4 0%, #e8f8f0 100%); border: 1px solid var(--border-color);">
+                    <div class="mb-3">
+                        <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center" 
+                             style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--success-color) 0%, #2f855a 100%); color: white;">
+                            <i class="fas fa-users fa-2x"></i>
+                        </div>
+                    </div>
+                    <h5 class="fw-semibold mb-2" style="color: var(--text-primary);">Connect</h5>
+                    <p class="text-muted mb-0">Follow and interact with others</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-4 rounded-3 h-100" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border: 1px solid var(--border-color);">
+                    <div class="mb-3">
+                        <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center" 
+                             style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--secondary-color) 0%, var(--text-secondary) 100%); color: white;">
+                            <i class="fas fa-globe fa-2x"></i>
+                        </div>
+                    </div>
+                    <h5 class="fw-semibold mb-2" style="color: var(--text-primary);">Discover</h5>
+                    <p class="text-muted mb-0">Explore what's happening now</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-5">
+            {% if user.is_authenticated %}
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <h4 class="mb-3 fw-bold" style="color: var(--text-primary);">Welcome back, {{ user.username }}!</h4>
+                        <div class="d-grid gap-2 d-md-block">
+                            <a href="{% url 'tweet_list' %}" class="btn btn-primary btn-lg px-4 py-2 fw-semibold">
+                                <i class="fas fa-stream me-2"></i>View Timeline
+                            </a>
+                            <a href="{% url 'tweet_create' %}" class="btn btn-outline-primary btn-lg px-4 py-2">
+                                <i class="fas fa-plus me-2"></i>Create Tweet
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <h4 class="mb-3 fw-bold" style="color: var(--text-primary);">Ready to get started?</h4>
+                        <div class="d-grid gap-2 d-md-block">
+                            <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-4 py-2 fw-semibold">
+                                <i class="fas fa-user-plus me-2"></i>Join Now
+                            </a>
+                            <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg px-4 py-2">
+                                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                            </a>
+                        </div>
+                        <p class="text-muted mt-3 mb-0">Join thousands of users sharing their thoughts</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0,0,0,.15) !important;
+    }
+    
+    .btn {
+        transition: all 0.2s ease;
+    }
+    
+    .btn:hover {
+        transform: translateY(-1px);
+    }
+    
+    .col-md-4 > div {
+        transition: transform 0.2s ease;
+    }
+    
+    .col-md-4 > div:hover {
+        transform: translateY(-3px);
+    }
+</style>
 {% endblock  %}

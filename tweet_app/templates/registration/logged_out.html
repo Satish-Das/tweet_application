@@ -1,10 +1,153 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Log
+    Successfully Logged Out - TweetApp
 {% endblock  %}
 
 {% block content %}
-<h1>Logged out</h1>
-<p>you have beed logged out <a href="{% url 'login' %}">Login</a></p>
+<div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8 col-sm-10">
+        <div class="card shadow-lg border-0 rounded-4 text-center">
+            <div class="card-body p-5">
+                <div class="mb-4">
+                    <div class="mx-auto d-flex align-items-center justify-content-center rounded-circle" 
+                         style="width: 100px; height: 100px; background: linear-gradient(135deg, #38a169 0%, #2f855a 100%); color: white;">
+                        <i class="fas fa-sign-out-alt fa-3x"></i>
+                    </div>
+                </div>
+                
+                <h2 class="mb-3 fw-bold" style="color: var(--text-primary);">
+                    <i class="fas fa-check-circle me-2" style="color: var(--success-color);"></i>
+                    Successfully Logged Out!
+                </h2>
+                
+                <p class="text-muted mb-4 fs-5">
+                    Thank you for using TweetApp! You have been safely logged out of your account.
+                </p>
+                
+                <div class="alert alert-info border-0 rounded-3 mb-4">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Security Tip:</strong> Always log out when using shared or public computers to keep your account secure.
+                </div>
+                
+                <div class="d-grid gap-3">
+                    <a href="{% url 'login' %}" class="btn btn-primary btn-lg rounded-3 fw-semibold py-3">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign In Again
+                    </a>
+                    
+                    <a href="{% url 'tweet_list' %}" class="btn btn-outline-secondary btn-lg rounded-3 fw-semibold">
+                        <i class="fas fa-home me-2"></i>Browse Public Timeline
+                    </a>
+                </div>
+                
+                <div class="mt-4 pt-4 border-top">
+                    <h6 class="text-muted mb-3">Don't have an account yet?</h6>
+                    <a href="{% url 'register' %}" class="btn btn-success btn-lg rounded-3 fw-semibold">
+                        <i class="fas fa-user-plus me-2"></i>Create New Account
+                    </a>
+                </div>
+            </div>
+            
+            <div class="card-footer border-0 py-3" style="background-color: var(--light-bg);">
+                <small class="text-muted">
+                    <i class="fas fa-shield-alt me-1"></i>
+                    Your session has been securely terminated
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+        transition: transform 0.2s ease;
+    }
+    
+    .alert {
+        background: linear-gradient(135deg, #ebf8ff 0%, #f0f8ff 100%);
+        border-left: 4px solid var(--accent-color);
+    }
+</style>
+{% endblock  %}
+                <small class="text-muted">
+                    <i class="fas fa-shield-alt me-2"></i>
+                    Your session has been securely terminated
+                </small>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <div class="row text-muted">
+                <div class="col-4">
+                    <i class="fas fa-users fa-2x mb-2 text-primary"></i>
+                    <p class="small mb-0">Join thousands<br>of users</p>
+                </div>
+                <div class="col-4">
+                    <i class="fas fa-comments fa-2x mb-2 text-success"></i>
+                    <p class="small mb-0">Share your<br>thoughts</p>
+                </div>
+                <div class="col-4">
+                    <i class="fas fa-heart fa-2x mb-2 text-danger"></i>
+                    <p class="small mb-0">Connect with<br>friends</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: slideInUp 0.6s ease;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.bg-success {
+    animation: pulse 2s infinite;
+}
+
+.row .col-4:hover i {
+    transform: scale(1.2);
+    transition: transform 0.3s ease;
+}
+</style>
 {% endblock  %}

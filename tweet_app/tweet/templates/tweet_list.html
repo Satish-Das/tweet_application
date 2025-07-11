@@ -5,85 +5,147 @@ Tweet List
 {% endblock  %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-8 mx-auto">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2><i class="fas fa-home"></i> Home</h2>
-                {% if user.is_authenticated %}
-                    <a class="btn btn-primary" href="{% url 'tweet_create' %}">
-                        <i class="fas fa-plus"></i> New Tweet
-                    </a>
-                {% endif %}
-            </div>
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold mb-0" style="color: var(--text-primary);">
+                <i class="fas fa-stream me-2"></i>Timeline
+            </h2>
+            {% if user.is_authenticated %}
+                <a class="btn btn-primary rounded-pill fw-semibold px-4" href="{% url 'tweet_create' %}">
+                    <i class="fas fa-plus me-2"></i>New Tweet
+                </a>
+            {% endif %}
+        </div>
             
-            {% for tweet in tweets %}
-                <div class="card mb-3 shadow-sm">
-                    {% if tweet.photo %}
-                        <img src="{{ tweet.photo.url }}" class="card-img-top" alt="Tweet image" style="max-height: 400px; object-fit: cover;">
-                    {% endif %}
-                    <div class="card-body">
-                        <div class="d-flex align-items-start mb-2">
-                            <div class="me-3">
-                                {% if tweet.user.userprofile.avatar %}
-                                    <img src="{{ tweet.user.userprofile.avatar.url }}" class="rounded-circle" width="40" height="40" alt="Avatar">
-                                {% else %}
-                                    <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                        <i class="fas fa-user text-white"></i>
+        {% for tweet in tweets %}
+            <div class="card mb-4 shadow-sm border-0 rounded-4">
+                {% if tweet.photo %}
+                    <img src="{{ tweet.photo.url }}" class="card-img-top rounded-top-4" alt="Tweet image" style="max-height: 400px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="me-3">
+                            {% if tweet.user.userprofile.avatar %}
+                                <img src="{{ tweet.user.userprofile.avatar.url }}" class="rounded-circle border shadow-sm" width="50" height="50" alt="Avatar">
+                            {% else %}
+                                <div class="rounded-circle d-flex align-items-center justify-content-center border shadow-sm" 
+                                     style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%); color: white;">
+                                    <i class="fas fa-user fa-lg"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <a href="{% url 'profile_view' tweet.user.username %}" class="text-decoration-none">
+                                        <h6 class="card-title mb-0 fw-semibold" style="color: var(--text-primary);">
+                                            {{ tweet.user.get_full_name|default:tweet.user.username }}
+                                        </h6>
+                                    </a>
+                                    <small class="text-muted">@{{ tweet.user.username }} • {{ tweet.created_at|timesince }} ago</small>
+                                </div>
+                                {% if user == tweet.user %}
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle rounded-pill" type="button" data-bs-toggle="dropdown">
+                                            <i class="fas fa-ellipsis-h"></i>
+                                        </button>
+                                        <ul class="dropdown-menu shadow-sm border-0 rounded-3">
+                                            <li><a class="dropdown-item" href="{% url 'tweet_edit' tweet.id %}">
+                                                <i class="fas fa-edit me-2"></i>Edit
+                                            </a></li>
+                                            <li><a class="dropdown-item text-danger" href="{% url 'tweet_delete' tweet.id %}">
+                                                <i class="fas fa-trash me-2"></i>Delete
+                                            </a></li>
+                                        </ul>
                                     </div>
                                 {% endif %}
                             </div>
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <a href="{% url 'profile_view' tweet.user.username %}" class="text-decoration-none">
-                                            <h6 class="card-title mb-0">{{ tweet.user.get_full_name|default:tweet.user.username }}</h6>
-                                        </a>
-                                        <small class="text-muted">@{{ tweet.user.username }} • {{ tweet.created_at|timesince }} ago</small>
-                                    </div>
-                                    {% if user == tweet.user %}
-                                        <div class="dropdown">
-                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                                <i class="fas fa-ellipsis-h"></i>
-                                            </button>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="{% url 'tweet_edit' tweet.id %}">
-                                                    <i class="fas fa-edit"></i> Edit
-                                                </a></li>
-                                                <li><a class="dropdown-item text-danger" href="{% url 'tweet_delete' tweet.id %}">
-                                                    <i class="fas fa-trash"></i> Delete
-                                                </a></li>
-                                            </ul>
-                                        </div>
-                                    {% endif %}
+                            <p class="card-text mt-3 mb-4" style="color: var(--text-primary); line-height: 1.6; font-size: 1.1rem;">
+                                {{ tweet.text }}
+                            </p>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex gap-4">
+                                    <button class="btn btn-sm btn-outline-secondary rounded-pill border-0 bg-transparent" style="color: var(--text-muted);">
+                                        <i class="far fa-comment me-1"></i>
+                                        <span>Reply</span>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary rounded-pill border-0 bg-transparent" style="color: var(--text-muted);">
+                                        <i class="fas fa-retweet me-1"></i>
+                                        <span>Retweet</span>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary rounded-pill border-0 bg-transparent" style="color: var(--text-muted);">
+                                        <i class="far fa-heart me-1"></i>
+                                        <span>Like</span>
+                                    </button>
                                 </div>
-                                <p class="card-text mt-2">{{ tweet.text }}</p>
-                                <div class="d-flex gap-3 text-muted">
-                                    <small><i class="far fa-comment"></i> 0</small>
-                                    <small><i class="fas fa-retweet"></i> 0</small>
-                                    <small><i class="far fa-heart"></i> 0</small>
-                                </div>
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>{{ tweet.created_at|date:"M d, Y" }}
+                                </small>
                             </div>
                         </div>
                     </div>
                 </div>
-            {% empty %}
-                <div class="text-center py-5">
-                    <i class="fas fa-twitter fa-3x text-muted mb-3"></i>
-                    <h4>No tweets yet</h4>
-                    <p class="text-muted">Be the first to share something!</p>
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'tweet_create' %}" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Create your first tweet
-                        </a>
-                    {% else %}
-                        <a href="{% url 'register' %}" class="btn btn-primary">
-                            <i class="fas fa-user-plus"></i> Join the conversation
-                        </a>
-                    {% endif %}
+            </div>
+        {% empty %}
+            <div class="text-center py-5">
+                <div class="card shadow-sm border-0 rounded-4">
+                    <div class="card-body p-5">
+                        <div class="mb-4">
+                            <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center" 
+                                 style="width: 100px; height: 100px; background: linear-gradient(135deg, var(--light-bg) 0%, #f8f9fa 100%); color: var(--text-muted);">
+                                <i class="fas fa-comment-slash fa-3x"></i>
+                            </div>
+                        </div>
+                        <h4 class="fw-bold mb-3" style="color: var(--text-primary);">No tweets yet</h4>
+                        <p class="text-muted mb-4">Be the first to share something amazing!</p>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'tweet_create' %}" class="btn btn-primary btn-lg rounded-pill fw-semibold px-4">
+                                <i class="fas fa-plus me-2"></i>Create your first tweet
+                            </a>
+                        {% else %}
+                            <a href="{% url 'register' %}" class="btn btn-primary btn-lg rounded-pill fw-semibold px-4">
+                                <i class="fas fa-user-plus me-2"></i>Join the conversation
+                            </a>
+                        {% endif %}
+                    </div>
                 </div>
-            {% endfor %}
-        </div>
+            </div>
+        {% endfor %}
     </div>
 </div>
+
+<style>
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,.15) !important;
+}
+
+.btn {
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn-outline-secondary.border-0:hover {
+    background-color: var(--light-bg) !important;
+    color: var(--accent-color) !important;
+}
+
+.card-title:hover {
+    color: var(--accent-color) !important;
+}
+
+.dropdown-menu {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+</style>
 {% endblock %}
