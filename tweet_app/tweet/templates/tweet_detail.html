@@ -58,17 +58,6 @@ Tweet Detail
                                                 </a></li>
                                             </ul>
                                         </div>
-                                    {% elif user.is_authenticated %}
-                                        <div class="dropdown">
-                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle rounded-pill" type="button" data-bs-toggle="dropdown">
-                                                <i class="fas fa-ellipsis-h"></i>
-                                            </button>
-                                            <ul class="dropdown-menu shadow-sm border-0 rounded-3">
-                                                <li><a class="dropdown-item" href="{% url 'report_tweet' tweet.id %}">
-                                                    <i class="fas fa-flag me-2"></i>Report Tweet
-                                                </a></li>
-                                            </ul>
-                                        </div>
                                     {% endif %}
                                 </div>
                             </div>

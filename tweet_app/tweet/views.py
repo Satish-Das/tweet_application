@@ -1,12 +1,27 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib import messages
 from django.http import JsonResponse
 from django.db import models
-from django.contrib import messages
+from django.core.paginator import Paginator
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate, login as auth_login
 from .models import Tweet, UserProfile, Like, Comment
 from .forms import TweetForm, UserRegistrationForm, UserProfileForm, UserUpdateForm, CommentForm
+
+def anonymous_required(view_func):
+    """
+    Decorator that redirects authenticated users away from the view.
+    Used for login and register views.
+    """
+    def wrapper(request, *args, **kwargs):
+        if request.user.is_authenticated:
+            messages.info(request, "You are already logged in.")
+            return redirect('tweet_list')
+        return view_func(request, *args, **kwargs)
+    return wrapper
 
 # Create your views here.
 def index(request):
@@ -51,6 +66,7 @@ def tweet_delete(request, tweet_id):
         return redirect("tweet_list")
     return render(request, 'tweet_confirm_delete.html', {'tweet': tweet})
 
+@anonymous_required
 def register(request):
     if request.method == "POST":
         form = UserRegistrationForm(request.POST)
@@ -187,3 +203,19 @@ def search(request):
         'tweets_count': tweets.count() if tweets else 0,
     }
     return render(request, 'search.html', context)
+
+@anonymous_required
+def custom_login(request):
+    """Custom login view that prevents authenticated users from accessing"""
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                auth_login(request, user)
+                return redirect('tweet_list')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'registration/login.html', {'form': form})

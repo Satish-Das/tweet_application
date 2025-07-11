@@ -20,6 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.urls import views as auth_views
 from django.shortcuts import redirect
+from tweet.views import custom_login, register
 
 def redirect_to_tweets(request):
     """Redirect root URL to tweet list"""
@@ -28,6 +29,8 @@ def redirect_to_tweets(request):
 urlpatterns = [
     path('', redirect_to_tweets, name='index'),
     path('admin/', admin.site.urls),
-    path('tweet/', include('tweet.urls')),
+    path('accounts/login/', custom_login, name='login'),
+    path('accounts/register/', register, name='register'),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('tweet/', include('tweet.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
