@@ -1,8 +1,30 @@
 # Tweet Application
 
-A Django-based Twitter-like application built on **July 10-11, 2025**.
+A Django-based Twitter-like application built on **July 10-11, ### 🔄 I- [x] **Responsive Design**: Mobile-friendly interface with Bootstrap grid
+- [x] **Database Migrations**: All models properly migrated to database
+- [x] **URL Configuration**: Fixed routing issues and proper URL pattern ordering
+- [x] **Security Features**: CSRF protection, POST-based logout, login requirements
 
-## Project Overview
+### 🔄 In Progress
+- [ ] Tweet likes and reactions system
+- [ ] Real-time notifications
+
+### 📋 Pending Features
+- [ ] Tweet detail view with comments
+- [ ] Advanced search functionality
+- [ ] Email notifications
+- [ ] Direct messaging system
+- [ ] Tweet analytics
+- [ ] Content moderation tools[ ] Tweet likes and reactions system
+- [ ] Real-time notifications
+
+### 📋 Pending Features
+- [ ] Tweet detail view with comments
+- [ ] Advanced search functionality
+- [ ] Email notifications
+- [ ] Direct messaging system
+- [ ] Tweet analytics
+- [ ] Content moderation tools Project Overview
 
 This is a Django web application designed to replicate basic Twitter functionality. The project features a complete tweet system with user authentication, user registration, tweet creation, editing, and deletion capabilities, styled with Bootstrap 5.3.7.
 
@@ -21,7 +43,7 @@ tweet_application/
     ├── media/                      # Media files directory
     │   └── photos/                 # Tweet photos storage
     ├── templates/                  # Global templates
-    │   ├── layout.html             # Base template with Bootstrap
+    │   ├── layout.html             # Base template with Bootstrap & Font Awesome
     │   └── registration/           # Authentication templates
     │       ├── login.html          # Login page
     │       ├── register.html       # Registration page
@@ -30,16 +52,18 @@ tweet_application/
     │   ├── __init__.py
     │   ├── admin.py                # Admin interface configuration
     │   ├── apps.py                 # App configuration
-    │   ├── models.py               # Tweet model
-    │   ├── forms.py                # Tweet and User Registration forms
-    │   ├── views.py                # Tweet CRUD + Auth views
+    │   ├── models.py               # Tweet and UserProfile models
+    │   ├── forms.py                # Tweet, User Registration, and Profile forms
+    │   ├── views.py                # Tweet CRUD + Auth + Profile views
     │   ├── urls.py                 # URL routing for tweet app
     │   ├── tests.py                # Test cases
     │   ├── templates/              # App-specific templates
     │   │   ├── index.html          # Home page template
-    │   │   ├── tweet_list.html     # Tweet listing page
+    │   │   ├── tweet_list.html     # Enhanced tweet listing page
     │   │   ├── tweet_form.html     # Tweet create/edit form
-    │   │   └── tweet_confirm_delete.html # Delete confirmation
+    │   │   ├── tweet_confirm_delete.html # Delete confirmation
+    │   │   ├── profile.html        # User profile page
+    │   │   └── profile_edit.html   # Profile editing form
     │   └── migrations/             # Database migrations
     │       └── __init__.py
     └── tweet_app/                  # Project settings directory
@@ -62,17 +86,25 @@ tweet_application/
 - [x] SQLite database setup
 - [x] Admin interface setup
 - [x] **Tweet Model**: Complete with user association, text, photo, timestamps
+- [x] **User Profile Model**: Bio, avatar, location, birth date, website, follower system
 - [x] **Tweet Forms**: ModelForm for creating and editing tweets
 - [x] **User Registration Form**: Custom registration form with email field
+- [x] **Profile Forms**: User profile and user update forms with Bootstrap styling
 - [x] **Tweet Views**: Full CRUD operations (Create, Read, Update, Delete)
+- [x] **Profile Views**: Profile view, edit profile, follow/unfollow functionality
 - [x] **Authentication Views**: Login, logout, registration functionality
-- [x] **URL Routing**: Complete routing for all views
-- [x] **Admin Integration**: Tweet model registered in admin panel
+- [x] **URL Routing**: Complete routing for all views including profiles
+- [x] **Admin Integration**: Tweet and UserProfile models registered in admin panel
 - [x] **Bootstrap 5.3.7 Integration**: Modern responsive UI framework
-- [x] **Template Structure**: Complete template system with authentication
-- [x] **Media Handling**: Photo upload functionality for tweets
+- [x] **Font Awesome Integration**: Icons for enhanced UI experience
+- [x] **Template Structure**: Complete template system with authentication and profiles
+- [x] **Media Handling**: Photo upload for tweets and profile avatars
 - [x] **User Authentication**: Login/logout/registration system
 - [x] **Session Management**: Proper login redirects and session handling
+- [x] **Profile Management**: Complete user profile system with avatars and bio
+- [x] **Follow System**: Users can follow/unfollow each other
+- [x] **Enhanced Navigation**: Modern navbar with user dropdown and icons
+- [x] **Responsive Design**: Mobile-friendly interface with Bootstrap grid
 
 ### � In Progress
 - [ ] User profile management
@@ -90,7 +122,7 @@ tweet_application/
 
 - **Backend**: Django 5.2.4
 - **Database**: SQLite3
-- **Frontend**: Bootstrap 5.3.7 (CDN)
+- **Frontend**: Bootstrap 5.3.7 (CDN), Font Awesome 6.4.0 (CDN)
 - **Image Processing**: Pillow 11.3.0
 - **Python**: Python 3.13
 - **Environment**: Virtual environment (.venv)
@@ -132,6 +164,9 @@ sqlparse==0.5.3
 - Edit tweet: `/tweet/<id>/edit/`
 - Delete tweet: `/tweet/<id>/delete/`
 - User registration: `/tweet/register/`
+- User profiles: `/tweet/profile/<username>/`
+- Edit profile: `/tweet/profile/edit/`
+- Follow user: `/tweet/follow/<username>/`
 - Login: `/accounts/login/`
 - Logout: `/accounts/logout/`
 - Password management: `/accounts/password_change/` etc.
@@ -190,6 +225,7 @@ sqlparse==0.5.3
    - Tweet home page: http://127.0.0.1:8000/tweet/
    - Login page: http://127.0.0.1:8000/accounts/login/
    - Registration page: http://127.0.0.1:8000/tweet/register/
+   - User profiles: http://127.0.0.1:8000/tweet/profile/<username>/
    - Admin interface: http://127.0.0.1:8000/admin/
 
 ## Bootstrap Configuration
@@ -207,6 +243,9 @@ The project uses Bootstrap 5.3.7 for styling and responsive design:
 ```html
 <!-- CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Font Awesome Icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
 <!-- JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
@@ -231,6 +270,7 @@ The project uses Bootstrap 5.3.7 for styling and responsive design:
 ## Models and Forms Implementation
 
 ```python
+# Tweet Model
 class Tweet(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField(max_length=240)
@@ -238,26 +278,84 @@ class Tweet(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+# User Profile Model
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.TextField(max_length=500, blank=True)
+    location = models.CharField(max_length=30, blank=True)
+    birth_date = models.DateField(null=True, blank=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+    website = models.URLField(blank=True)
+    followers = models.ManyToManyField(User, related_name='following', blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+# Tweet Form
 class TweetForm(forms.ModelForm):
     class Meta:
         model = Tweet
         fields = ['text', 'photo']
 
+# User Registration Form
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField()
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2')
+
+# Profile Forms
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['bio', 'location', 'birth_date', 'avatar', 'website']
+        widgets = {
+            'bio': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'location': forms.TextInput(attrs={'class': 'form-control'}),
+            'birth_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'avatar': forms.FileInput(attrs={'class': 'form-control'}),
+            'website': forms.URLInput(attrs={'class': 'form-control'}),
+        }
 ```
 
 ## Views Implemented
 
 - **index**: Home page view (legacy, redirects to tweet_list)
-- **tweet_list**: Display all tweets (connected to URL `/tweet/`)
+- **tweet_list**: Display all tweets with enhanced UI (connected to URL `/tweet/`)
 - **tweet_create**: Create new tweets (connected to URL `/tweet/create/`)
 - **tweet_edit**: Edit existing tweets (connected to URL `/tweet/<id>/edit/`)
 - **tweet_delete**: Delete tweets (connected to URL `/tweet/<id>/delete/`)
 - **register**: User registration (connected to URL `/tweet/register/`)
+- **profile_view**: Display user profiles (connected to URL `/tweet/profile/<username>/`)
+- **profile_edit**: Edit user profile (connected to URL `/tweet/profile/edit/`)
+- **follow_user**: Follow/unfollow users (connected to URL `/tweet/follow/<username>/`)
+
+## Key Features Implemented
+
+### 🔐 **Authentication System**
+- User registration with email validation
+- Login/logout functionality
+- Session management with proper redirects
+- Protected views with login_required decorators
+
+### 👤 **User Profile Management**
+- Complete user profiles with bio, location, website, birth date
+- Profile picture upload functionality
+- Follow/unfollow system with follower counts
+- Profile editing with form validation
+
+### 🐦 **Tweet Management**
+- Full CRUD operations for tweets
+- Image upload for tweets
+- User ownership validation for edit/delete
+- Enhanced tweet display with user avatars
+
+### 🎨 **UI/UX Enhancements**
+- Modern Bootstrap 5.3.7 interface
+- Font Awesome icons throughout the app
+- Responsive design for mobile devices
+- Enhanced navigation with user dropdown
+- Card-based tweet layout with social media styling
+- Profile pages with follower statistics
 
 ## Contributing
 
