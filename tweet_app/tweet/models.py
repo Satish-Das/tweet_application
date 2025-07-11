@@ -11,6 +11,17 @@ class Tweet(models.Model):
 
     def __str__(self):
         return f'{self.user.username} - {self.text[:10]}'
+    
+    @property
+    def likes_count(self):
+        return self.likes.count()
+    
+    @property
+    def comments_count(self):
+        return self.comments.count()
+    
+    def is_liked_by(self, user):
+        return self.likes.filter(user=user).exists()
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -33,3 +44,81 @@ class UserProfile(models.Model):
     @property
     def following_count(self):
         return self.user.following.count()
+
+class Like(models.Model):
+    REACTION_CHOICES = [
+        ('like', '👍 Like'),
+        ('love', '❤️ Love'),
+        ('laugh', '😂 Laugh'),
+        ('wow', '😮 Wow'),
+        ('sad', '😢 Sad'),
+        ('angry', '😠 Angry'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    tweet = models.ForeignKey(Tweet, on_delete=models.CASCADE, related_name='likes')
+    reaction_type = models.CharField(max_length=10, choices=REACTION_CHOICES, default='like')
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('user', 'tweet')  # One reaction per user per tweet
+    
+    def __str__(self):
+        return f'{self.user.username} {self.reaction_type} {self.tweet.text[:20]}'
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    tweet = models.ForeignKey(Tweet, on_delete=models.CASCADE, related_name='comments')
+    text = models.TextField(max_length=280)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f'{self.user.username} commented on {self.tweet.text[:20]}'
+
+class Report(models.Model):
+    REPORT_TYPES = [
+        ('spam', 'Spam'),
+        ('harassment', 'Harassment'),
+        ('hate_speech', 'Hate Speech'),
+        ('violence', 'Violence'),
+        ('inappropriate', 'Inappropriate Content'),
+        ('misinformation', 'Misinformation'),
+        ('other', 'Other'),
+    ]
+    
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('reviewed', 'Reviewed'),
+        ('resolved', 'Resolved'),
+        ('dismissed', 'Dismissed'),
+    ]
+    
+    reporter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reports_made')
+    tweet = models.ForeignKey(Tweet, on_delete=models.CASCADE, related_name='reports')
+    report_type = models.CharField(max_length=20, choices=REPORT_TYPES)
+    description = models.TextField(blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    resolved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='reports_resolved')
+    resolved_at = models.DateTimeField(null=True, blank=True)
+    
+    class Meta:
+        unique_together = ('reporter', 'tweet')  # One report per user per tweet
+    
+    def __str__(self):
+        return f'{self.reporter.username} reported {self.tweet.text[:20]} for {self.report_type}'
+
+class Block(models.Model):
+    blocker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blocking')
+    blocked = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blocked_by')
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('blocker', 'blocked')
+    
+    def __str__(self):
+        return f'{self.blocker.username} blocked {self.blocked.username}'

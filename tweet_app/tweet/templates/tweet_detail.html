@@ -1,0 +1,319 @@
+{% extends "layout.html" %}
+{% load tweet_extras %}
+
+{% block title %}
+Tweet Detail
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold mb-0" style="color: var(--text-primary);">
+                <i class="fas fa-comment-alt me-2"></i>Tweet Details
+            </h2>
+            <a href="{% url 'tweet_list' %}" class="btn btn-outline-secondary rounded-pill">
+                <i class="fas fa-arrow-left me-2"></i>Back to Timeline
+            </a>
+        </div>
+        
+        <!-- Main Tweet -->
+        <div class="card mb-4 shadow-sm border-0 rounded-4">
+            {% if tweet.photo %}
+                <img src="{{ tweet.photo.url }}" class="card-img-top rounded-top-4" alt="Tweet image" style="max-height: 400px; object-fit: cover;">
+            {% endif %}
+            <div class="card-body p-4">
+                <div class="d-flex align-items-start mb-3">
+                    <div class="me-3">
+                        {% if tweet.user.userprofile.avatar %}
+                            <img src="{{ tweet.user.userprofile.avatar.url }}" class="rounded-circle border shadow-sm" width="60" height="60" alt="Avatar">
+                        {% else %}
+                            <div class="rounded-circle d-flex align-items-center justify-content-center border shadow-sm" 
+                                 style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%); color: white;">
+                                <i class="fas fa-user fa-lg"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="flex-grow-1">                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <a href="{% url 'profile_view' tweet.user.username %}" class="text-decoration-none">
+                                        <h5 class="card-title mb-0 fw-bold" style="color: var(--text-primary);">
+                                            {{ tweet.user.get_full_name|default:tweet.user.username }}
+                                        </h5>
+                                    </a>
+                                    <small class="text-muted">@{{ tweet.user.username }} • {{ tweet.created_at|date:"M d, Y g:i A" }}</small>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    {% if user == tweet.user %}
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle rounded-pill" type="button" data-bs-toggle="dropdown">
+                                                <i class="fas fa-ellipsis-h"></i>
+                                            </button>
+                                            <ul class="dropdown-menu shadow-sm border-0 rounded-3">
+                                                <li><a class="dropdown-item" href="{% url 'tweet_edit' tweet.id %}">
+                                                    <i class="fas fa-edit me-2"></i>Edit
+                                                </a></li>
+                                                <li><a class="dropdown-item text-danger" href="{% url 'tweet_delete' tweet.id %}">
+                                                    <i class="fas fa-trash me-2"></i>Delete
+                                                </a></li>
+                                            </ul>
+                                        </div>
+                                    {% elif user.is_authenticated %}
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle rounded-pill" type="button" data-bs-toggle="dropdown">
+                                                <i class="fas fa-ellipsis-h"></i>
+                                            </button>
+                                            <ul class="dropdown-menu shadow-sm border-0 rounded-3">
+                                                <li><a class="dropdown-item" href="{% url 'report_tweet' tweet.id %}">
+                                                    <i class="fas fa-flag me-2"></i>Report Tweet
+                                                </a></li>
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        <p class="card-text mt-3 mb-4" style="color: var(--text-primary); line-height: 1.6; font-size: 1.2rem;">
+                            {{ tweet.text }}
+                        </p>
+                        
+                        <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                            <div class="d-flex gap-4">
+                                <span class="btn btn-sm btn-outline-secondary rounded-pill border-0 bg-transparent" style="color: var(--text-muted);">
+                                    <i class="far fa-comment me-1"></i>
+                                    <span>{{ tweet.comments_count }}</span>
+                                </span>
+                                <button class="btn btn-sm btn-outline-secondary rounded-pill border-0 bg-transparent" style="color: var(--text-muted);">
+                                    <i class="fas fa-retweet me-1"></i>
+                                    <span>Retweet</span>
+                                </button>
+                                {% if user.is_authenticated %}
+                                    <button class="btn btn-sm btn-outline-secondary rounded-pill border-0 bg-transparent like-btn" 
+                                            data-tweet-id="{{ tweet.id }}" 
+                                            style="color: {% if tweet|is_liked_by:user %}#e91e63{% else %}var(--text-muted){% endif %};">
+                                        <i class="{% if tweet|is_liked_by:user %}fas{% else %}far{% endif %} fa-heart me-1"></i>
+                                        <span class="like-count">{{ tweet.likes_count }}</span>
+                                    </button>
+                                {% else %}
+                                    <button class="btn btn-sm btn-outline-secondary rounded-pill border-0 bg-transparent" style="color: var(--text-muted);">
+                                        <i class="far fa-heart me-1"></i>
+                                        <span>{{ tweet.likes_count }}</span>
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comment Form -->
+        {% if user.is_authenticated %}
+            <div class="card mb-4 shadow-sm border-0 rounded-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-start">
+                        <div class="me-3">
+                            {% if user.userprofile.avatar %}
+                                <img src="{{ user.userprofile.avatar.url }}" class="rounded-circle border shadow-sm" width="50" height="50" alt="Avatar">
+                            {% else %}
+                                <div class="rounded-circle d-flex align-items-center justify-content-center border shadow-sm" 
+                                     style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%); color: white;">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow-1">
+                            <form method="post" class="needs-validation" novalidate>
+                                {% csrf_token %}
+                                
+                                <!-- Display form errors -->
+                                {% if comment_form.errors %}
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                        {% for field, errors in comment_form.errors.items %}
+                                            {% for error in errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        {% endfor %}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                {% endif %}
+                                
+                                <div class="mb-3">
+                                    {{ comment_form.text }}
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        <span id="comment-char-count">0</span>/280 characters
+                                    </small>
+                                    <button type="submit" class="btn btn-primary rounded-pill fw-semibold px-4">
+                                        <i class="fas fa-paper-plane me-2"></i>Post Comment
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="card mb-4 shadow-sm border-0 rounded-4">
+                <div class="card-body p-4 text-center">
+                    <p class="text-muted mb-3">
+                        <i class="fas fa-user-lock fa-2x mb-2"></i><br>
+                        Please log in to comment on this tweet
+                    </p>
+                    <a href="{% url 'login' %}" class="btn btn-primary rounded-pill fw-semibold px-4">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Comments Section -->
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-header bg-transparent border-0 p-4">
+                <h5 class="fw-bold mb-0" style="color: var(--text-primary);">
+                    <i class="fas fa-comments me-2"></i>Comments ({{ comments.count }})
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                {% for comment in comments %}
+                    <div class="p-4 {% if not forloop.last %}border-bottom{% endif %}">
+                        <div class="d-flex align-items-start">
+                            <div class="me-3">
+                                {% if comment.user.userprofile.avatar %}
+                                    <img src="{{ comment.user.userprofile.avatar.url }}" class="rounded-circle border shadow-sm" width="40" height="40" alt="Avatar">
+                                {% else %}
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center border shadow-sm" 
+                                         style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%); color: white;">
+                                        <i class="fas fa-user fa-sm"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <a href="{% url 'profile_view' comment.user.username %}" class="text-decoration-none">
+                                            <h6 class="fw-semibold mb-0" style="color: var(--text-primary);">
+                                                {{ comment.user.get_full_name|default:comment.user.username }}
+                                            </h6>
+                                        </a>
+                                        <small class="text-muted">@{{ comment.user.username }} • {{ comment.created_at|timesince }} ago</small>
+                                    </div>
+                                    <small class="text-muted">{{ comment.created_at|date:"M d, Y g:i A" }}</small>
+                                </div>
+                                <p class="mb-0" style="color: var(--text-primary); line-height: 1.5;">
+                                    {{ comment.text }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-comment-slash fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No comments yet. Be the first to comment!</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,.15) !important;
+}
+
+.btn {
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn-outline-secondary.border-0:hover {
+    background-color: var(--light-bg) !important;
+    color: var(--accent-color) !important;
+}
+
+.like-btn:hover {
+    background-color: rgba(233, 30, 99, 0.1) !important;
+    color: #e91e63 !important;
+}
+
+.card-title:hover {
+    color: var(--accent-color) !important;
+}
+
+.dropdown-menu {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle like button clicks
+    const likeBtn = document.querySelector('.like-btn');
+    if (likeBtn) {
+        likeBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const tweetId = this.getAttribute('data-tweet-id');
+            
+            fetch(`/tweet/${tweetId}/like/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                const icon = this.querySelector('i');
+                const count = this.querySelector('.like-count');
+                
+                if (data.liked) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    this.style.color = '#e91e63';
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    this.style.color = 'var(--text-muted)';
+                }
+                
+                count.textContent = data.likes_count;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    }
+    
+    // Character count for comment form
+    const commentTextarea = document.querySelector('#id_text');
+    const charCount = document.querySelector('#comment-char-count');
+    
+    if (commentTextarea && charCount) {
+        commentTextarea.addEventListener('input', function() {
+            const length = this.value.length;
+            charCount.textContent = length;
+            
+            // Change color based on character count
+            if (length > 250) {
+                charCount.style.color = '#e91e63';
+            } else if (length > 200) {
+                charCount.style.color = '#ff9800';
+            } else {
+                charCount.style.color = 'var(--text-muted)';
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

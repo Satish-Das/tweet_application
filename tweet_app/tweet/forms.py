@@ -1,5 +1,5 @@
 from django import forms
-from .models import Tweet, UserProfile
+from .models import Tweet, UserProfile, Comment, Report
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
@@ -60,3 +60,48 @@ class UserUpdateForm(forms.ModelForm):
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
         }
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['text']
+        widgets = {
+            'text': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Write a comment...',
+                'maxlength': 280,
+                'style': 'border-radius: 12px; border: 2px solid var(--border-color); resize: none;'
+            })
+        }
+        
+    def clean_text(self):
+        text = self.cleaned_data.get('text')
+        if not text or len(text.strip()) == 0:
+            raise forms.ValidationError("Comment cannot be empty.")
+        if len(text) > 280:
+            raise forms.ValidationError("Comment cannot exceed 280 characters.")
+        return text
+
+class ReportForm(forms.ModelForm):
+    class Meta:
+        model = Report
+        fields = ['report_type', 'description']
+        widgets = {
+            'report_type': forms.Select(attrs={
+                'class': 'form-select',
+                'style': 'border-radius: 12px; border: 2px solid var(--border-color);'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 4,
+                'placeholder': 'Please provide additional details about this report...',
+                'style': 'border-radius: 12px; border: 2px solid var(--border-color); resize: none;'
+            })
+        }
+        
+    def clean_description(self):
+        description = self.cleaned_data.get('description')
+        if len(description) > 500:
+            raise forms.ValidationError("Description cannot exceed 500 characters.")
+        return description

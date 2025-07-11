@@ -1,0 +1,170 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Report Tweet
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold mb-0" style="color: var(--text-primary);">
+                <i class="fas fa-flag me-2"></i>Report Tweet
+            </h2>
+            <a href="{% url 'tweet_detail' tweet.id %}" class="btn btn-outline-secondary rounded-pill">
+                <i class="fas fa-arrow-left me-2"></i>Back to Tweet
+            </a>
+        </div>
+        
+        <!-- Tweet Preview -->
+        <div class="card mb-4 shadow-sm border-0 rounded-4">
+            <div class="card-header bg-transparent border-0 p-4">
+                <h6 class="fw-bold mb-0" style="color: var(--text-primary);">
+                    <i class="fas fa-eye me-2"></i>Tweet you're reporting
+                </h6>
+            </div>
+            <div class="card-body p-4">
+                <div class="d-flex align-items-start">
+                    <div class="me-3">
+                        {% if tweet.user.userprofile.avatar %}
+                            <img src="{{ tweet.user.userprofile.avatar.url }}" class="rounded-circle border shadow-sm" width="40" height="40" alt="Avatar">
+                        {% else %}
+                            <div class="rounded-circle d-flex align-items-center justify-content-center border shadow-sm" 
+                                 style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%); color: white;">
+                                <i class="fas fa-user fa-sm"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="mb-2">
+                            <h6 class="fw-semibold mb-0" style="color: var(--text-primary);">
+                                {{ tweet.user.get_full_name|default:tweet.user.username }}
+                            </h6>
+                            <small class="text-muted">@{{ tweet.user.username }} • {{ tweet.created_at|timesince }} ago</small>
+                        </div>
+                        <p class="mb-0" style="color: var(--text-primary); line-height: 1.5;">
+                            {{ tweet.text }}
+                        </p>
+                        {% if tweet.photo %}
+                            <img src="{{ tweet.photo.url }}" class="img-fluid rounded-3 mt-3" alt="Tweet image" style="max-height: 200px;">
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Report Form -->
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-header bg-transparent border-0 p-4">
+                <h6 class="fw-bold mb-0" style="color: var(--text-primary);">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Why are you reporting this tweet?
+                </h6>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Display form errors -->
+                    {% if form.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+                            {% endfor %}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.report_type.id_for_label }}" class="form-label fw-semibold">
+                            <i class="fas fa-list me-2"></i>Report Type
+                        </label>
+                        {{ form.report_type }}
+                        <div class="form-text">Select the most appropriate category for this report.</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.description.id_for_label }}" class="form-label fw-semibold">
+                            <i class="fas fa-comment me-2"></i>Additional Details (Optional)
+                        </label>
+                        {{ form.description }}
+                        <div class="form-text">
+                            <span id="report-char-count">0</span>/500 characters
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info border-0 rounded-3">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Important:</strong> False reports may result in account restrictions. 
+                        Please ensure your report is legitimate and follows our community guidelines.
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'tweet_detail' tweet.id %}" class="btn btn-outline-secondary rounded-pill">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-danger rounded-pill fw-semibold px-4">
+                            <i class="fas fa-flag me-2"></i>Submit Report
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,.15) !important;
+}
+
+.btn {
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.form-select:focus, .form-control:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.2rem rgba(43, 108, 176, 0.25);
+}
+
+.alert {
+    border: none;
+    border-radius: 12px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Character count for description
+    const descriptionTextarea = document.querySelector('#id_description');
+    const charCount = document.querySelector('#report-char-count');
+    
+    if (descriptionTextarea && charCount) {
+        descriptionTextarea.addEventListener('input', function() {
+            const length = this.value.length;
+            charCount.textContent = length;
+            
+            // Change color based on character count
+            if (length > 450) {
+                charCount.style.color = '#e91e63';
+            } else if (length > 400) {
+                charCount.style.color = '#ff9800';
+            } else {
+                charCount.style.color = 'var(--text-muted)';
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

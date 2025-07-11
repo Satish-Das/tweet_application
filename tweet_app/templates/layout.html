@@ -211,6 +211,16 @@
                     {% endif %}
                 </ul>
                 
+                <!-- Search Bar -->
+                <div class="d-flex me-3">
+                    <form method="get" action="{% url 'search' %}" class="d-flex">
+                        <input type="search" name="q" class="form-control me-2" placeholder="Search users or tweets..." value="{{ request.GET.q }}" style="width: 300px; border-radius: 25px; border: 1px solid rgba(255,255,255,.3); background-color: rgba(255,255,255,.1); color: white;">
+                        <button type="submit" class="btn btn-outline-light rounded-pill">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+                
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
                         <li class="nav-item dropdown">
