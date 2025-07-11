@@ -256,5 +256,22 @@
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,.15);
 }
+
+/* Dark mode support for profile stats cards */
+[data-theme="dark"] .col-3 > div {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+[data-theme="dark"] .col-3 > div:hover {
+    background-color: var(--light-bg) !important;
+    transform: translateY(-1px);
+}
+
+/* Remove gradients from bio section in dark mode */
+[data-theme="dark"] .p-3.rounded-3 {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+}
 </style>
 {% endblock %}
