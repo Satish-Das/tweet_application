@@ -23,12 +23,28 @@
             --border-color: #e2e8f0;
         }
         
+        [data-theme="dark"] {
+            --primary-color: #2d3748;
+            --secondary-color: #4a5568;
+            --accent-color: #4299e1;
+            --success-color: #48bb78;
+            --warning-color: #ed8936;
+            --danger-color: #f56565;
+            --light-bg: #1a202c;
+            --card-bg: #2d3748;
+            --text-primary: #e2e8f0;
+            --text-secondary: #cbd5e0;
+            --text-muted: #a0aec0;
+            --border-color: #4a5568;
+        }
+        
         body {
             margin: 0;
             padding: 0;
             background-color: var(--light-bg);
             color: var(--text-primary);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         
         .navbar {
@@ -53,6 +69,25 @@
             color: white !important;
         }
         
+        .theme-toggle {
+            background: rgba(255,255,255,.1);
+            border: 1px solid rgba(255,255,255,.2);
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(255,255,255,.2);
+            transform: scale(1.1);
+        }
+        
         .container {
             max-width: 1200px;
         }
@@ -62,7 +97,7 @@
             border: 1px solid var(--border-color);
             border-radius: 12px;
             box-shadow: 0 1px 3px rgba(0,0,0,.1);
-            transition: box-shadow 0.3s ease;
+            transition: box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
         }
         
         .card:hover {
@@ -125,6 +160,7 @@
         
         .dropdown-item {
             color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         
         .dropdown-item:hover {
@@ -147,22 +183,95 @@
             color: #2c5282;
         }
         
+        [data-theme="dark"] .alert-info {
+            background-color: #1a365d;
+            color: #90cdf4;
+        }
+        
         .alert-success {
             background-color: #f0fff4;
             color: #2f855a;
+        }
+        
+        [data-theme="dark"] .alert-success {
+            background-color: #1c4532;
+            color: #9ae6b4;
         }
         
         .form-control, .form-select {
             border: 2px solid var(--border-color);
             border-radius: 8px;
             font-size: 1rem;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+        }
+        
+        .form-control::placeholder {
+            color: var(--text-muted);
         }
         
         .form-control:focus, .form-select:focus {
             border-color: var(--accent-color);
             box-shadow: 0 0 0 0.2rem rgba(43, 108, 176, 0.25);
             outline: none;
+        }
+        
+        .modal-content {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .btn-close {
+            filter: var(--bs-btn-close-white-filter, none);
+        }
+        
+        [data-theme="dark"] .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+        
+        /* Improved hover effects for dark mode */
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,.15);
+        }
+        
+        [data-theme="dark"] .card:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,.3);
+            transform: translateY(-1px);
+        }
+        
+        /* Better hover effects for buttons in dark mode */
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        [data-theme="dark"] .btn-outline-secondary:hover {
+            background-color: var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        /* Profile card hover improvements */
+        .border-bottom:hover {
+            background-color: var(--light-bg);
+            transition: background-color 0.3s ease;
+        }
+        
+        [data-theme="dark"] .border-bottom:hover {
+            background-color: rgba(255,255,255,.05);
+        }
+        
+        /* Focus effects for dark mode */
+        [data-theme="dark"] .form-control:focus, [data-theme="dark"] .form-select:focus {
+            box-shadow: 0 0 0 0.2rem rgba(66, 153, 225, 0.25);
         }
         
         @media (max-width: 768px) {
@@ -219,6 +328,13 @@
                             <i class="fas fa-search"></i>
                         </button>
                     </form>
+                </div>
+                
+                <!-- Theme Toggle -->
+                <div class="me-3">
+                    <button id="theme-toggle" class="theme-toggle" title="Toggle Dark/Light Mode">
+                        <i class="fas fa-moon" id="theme-icon"></i>
+                    </button>
                 </div>
                 
                 <ul class="navbar-nav">
@@ -307,6 +423,46 @@
             const logoutModal = new bootstrap.Modal(document.getElementById('logoutModal'));
             logoutModal.show();
         }
+        
+        // Theme Toggle Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
+            const body = document.body;
+            
+            // Check for saved theme preference or default to light mode
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            
+            // Apply the saved theme
+            if (currentTheme === 'dark') {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                body.removeAttribute('data-theme');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+            
+            // Toggle theme on button click
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = body.getAttribute('data-theme');
+                
+                if (currentTheme === 'dark') {
+                    // Switch to light mode
+                    body.removeAttribute('data-theme');
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    // Switch to dark mode
+                    body.setAttribute('data-theme', 'dark');
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+        });
     </script>
 </body>
 </html>
