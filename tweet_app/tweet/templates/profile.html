@@ -163,6 +163,71 @@
                 {% endif %}
             </div>
         </div>
+        
+        <!-- Replies Section -->
+        {% if comments %}
+            <div class="card shadow-sm border-0 rounded-4 mt-4">
+                <div class="card-header border-0 py-3" style="background: linear-gradient(135deg, #e91e63 0%, #ff6b9d 100%); color: white; border-radius: 12px 12px 0 0;">
+                    <h4 class="mb-0 fw-bold">
+                        <i class="fas fa-comments me-2"></i>
+                        {{ profile_user.username }}'s Replies ({{ comments.count }})
+                    </h4>
+                </div>
+                <div class="card-body p-0">
+                    {% for comment in comments %}
+                        <div class="p-4 border-bottom" style="border-color: var(--border-color) !important;">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="d-flex align-items-center">
+                                    {% if comment.user.userprofile.avatar %}
+                                        <img src="{{ comment.user.userprofile.avatar.url }}" class="rounded-circle me-3 border" width="40" height="40" alt="Avatar">
+                                    {% else %}
+                                        <div class="rounded-circle me-3 d-flex align-items-center justify-content-center" 
+                                             style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%); color: white;">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div>
+                                        <h6 class="mb-0 fw-semibold" style="color: var(--text-primary);">
+                                            {{ comment.user.get_full_name|default:comment.user.username }}
+                                        </h6>
+                                        <small class="text-muted">@{{ comment.user.username }}</small>
+                                    </div>
+                                </div>
+                                <small class="text-muted">{{ comment.created_at|timesince }} ago</small>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <p class="mb-0" style="color: var(--text-primary); line-height: 1.6;">{{ comment.text }}</p>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <small class="text-muted me-3">
+                                        <i class="fas fa-reply me-1"></i>
+                                        Replied to 
+                                        <a href="{% url 'profile_view' comment.tweet.user.username %}" class="text-decoration-none">
+                                            @{{ comment.tweet.user.username }}
+                                        </a>'s tweet
+                                    </small>
+                                </div>
+                                <a href="{% url 'tweet_detail' comment.tweet.id %}" class="btn btn-sm btn-outline-primary rounded-pill">
+                                    <i class="fas fa-external-link-alt me-1"></i>
+                                    View Tweet
+                                </a>
+                            </div>
+                            
+                            <!-- Show excerpt of the original tweet -->
+                            <div class="mt-3 p-3 rounded-3" style="background: var(--light-bg); border-left: 4px solid #e91e63;">
+                                <small class="text-muted d-block mb-1">Original tweet:</small>
+                                <p class="mb-0 text-muted" style="font-size: 0.9rem;">
+                                    {{ comment.tweet.text|truncatewords:15 }}
+                                </p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
     </div>
 </div>
 

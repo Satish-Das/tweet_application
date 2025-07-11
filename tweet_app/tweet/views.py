@@ -73,11 +73,13 @@ def profile_view(request, username=None):
     
     profile, created = UserProfile.objects.get_or_create(user=user)
     tweets = Tweet.objects.filter(user=user).order_by('-created_at')
-    
+    comments = Comment.objects.filter(user=user).order_by('-created_at')
+
     context = {
         'profile_user': user,
         'profile': profile,
         'tweets': tweets,
+        'comments': comments,
         'is_own_profile': user == request.user,
     }
     return render(request, 'profile.html', context)
