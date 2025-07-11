@@ -19,8 +19,14 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.urls import views as auth_views
+from django.shortcuts import redirect
+
+def redirect_to_tweets(request):
+    """Redirect root URL to tweet list"""
+    return redirect('tweet_list')
 
 urlpatterns = [
+    path('', redirect_to_tweets, name='index'),
     path('admin/', admin.site.urls),
     path('tweet/', include('tweet.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
