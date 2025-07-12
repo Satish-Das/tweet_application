@@ -134,3 +134,6 @@ LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/tweet/'
 LOGOUT_REDIRECT_URL = '/tweet/'
 
+# Fix for admin logout 403 error
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://localhost:8000']
+

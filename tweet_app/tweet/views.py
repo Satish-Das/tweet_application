@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -8,6 +8,7 @@ from django.db import models
 from django.core.paginator import Paginator
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.admin.views.decorators import staff_member_required
 from .models import Tweet, UserProfile, Like, Comment
 from .forms import TweetForm, UserRegistrationForm, UserProfileForm, UserUpdateForm, CommentForm
 
@@ -224,3 +225,8 @@ def custom_login(request):
     else:
         form = AuthenticationForm()
     return render(request, 'registration/login.html', {'form': form})
+
+@staff_member_required
+def admin_logout(request):
+    logout(request)
+    return redirect('/admin/')
