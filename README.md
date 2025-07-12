@@ -1,6 +1,8 @@
 # 🐦 Tweet Application
 
-A feature-rich Django-based Twitter-like social media application built with modern web technologies. This application provides a complete social media experience with user authentication, tweet management, social interactions, and a beautiful responsive interface.
+A feature-rich Django-based Twitter-like social media *Application interface in light theme mode*
+
+## 📋 Future Enhancementsilt with modern web technologies. This application provides a complete social media experience with user authentication, tweet management, social interactions, and a beautiful responsive interface.
 
 ## 🚀 Live Demo
 
@@ -45,14 +47,50 @@ Access the application at: `http://127.0.0.1:8000/tweet/`
 - [x] **Error Handling**: Robust error management and user feedback
 - [x] **Security**: CSRF protection and secure authentication
 
-## 📋 Future Enhancements
+## � Screenshots
 
-### � Planned Features
-- [ ] **Email Notifications**: User activity notifications
-- [ ] **Direct Messaging**: Private messaging system
-- [ ] **Tweet Analytics**: Engagement metrics and insights
-- [ ] **Advanced Moderation**: Content filtering and reporting
-- [ ] **Real-time Updates**: WebSocket integration for live updates
+### 🏠 **Homepage & Timeline**
+![Homepage](screenshots/Home.png)
+*Main timeline showing tweets with modern card-based design*
+
+### 🔐 **Authentication**
+![Login Page](screenshots/login.png)
+*Clean and professional login interface*
+
+![Registration Page](screenshots/register.png)
+*User registration with form validation*
+
+### 👤 **User Profile**
+![User Profile](screenshots/Profile.png)
+*Complete user profile with tweets, stats, and follower information*
+
+### � **Social Features**
+![Comment System](screenshots/Comment-section.png)
+*Threaded comment discussions on tweets*
+
+### 👤 **Profile Management**
+![Edit Profile](screenshots/Edit_profile.png)
+*Profile editing interface with form controls*
+
+### 🔍 **Search & Navigation**
+![Search](screenshots/search.png)
+*Advanced search for users and tweets*
+
+### 🌞 **Light Mode**
+![Light Mode](screenshots/light-mode.png)
+*Application interface in light theme mode*
+
+### 📱 **Mobile Responsive**
+![Mobile Homepage](screenshots/mobile/mobile-homepage.png)
+*Mobile-optimized timeline view*
+
+![Mobile Profile](screenshots/mobile/mobile-profile.png)
+*Responsive user profile on mobile devices*
+
+### ⚙️ **Admin Interface**
+![Admin Panel](screenshots/ui/admin.png)
+*Django admin interface for content management*
+
 
 ## 🏗️ Project Architecture
 
